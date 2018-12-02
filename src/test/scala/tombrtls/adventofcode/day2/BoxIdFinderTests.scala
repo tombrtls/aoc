@@ -18,10 +18,10 @@ class BoxIdFinderTests extends FunSpec with Matchers {
   }
 
   it("should be able to tell when two strings have 1 character in difference") {
-    BoxIdFinder.singleCharacterDifferent("abcdefg")("abcdefe") should be (true)
-    BoxIdFinder.singleCharacterDifferent("abcdefg")("abedefg") should be (true)
-    BoxIdFinder.singleCharacterDifferent("abcdefg")("abadedg") should be (false)
-    BoxIdFinder.singleCharacterDifferent("abcdefg")("gfedcba") should be (false)
+    BoxIdFinder.singleCharacterDifferent("abcdefg", "abcdefe") should be (true)
+    BoxIdFinder.singleCharacterDifferent("abcdefg", "abedefg") should be (true)
+    BoxIdFinder.singleCharacterDifferent("abcdefg", "abadedg") should be (false)
+    BoxIdFinder.singleCharacterDifferent("abcdefg", "gfedcba") should be (false)
   }
 
   it("should be able to tell the common parts of the string") {
