@@ -7,20 +7,15 @@ object BoxIdFinder {
   }
 
   def findSimilarBoxIds(boxIds: Seq[String]): (String, String) = {
-    val pairs = for(
+    val similarPairs = for(
       box1 <- boxIds;
-      box2 <- boxIds
+      box2 <- boxIds if (hasSingleCharacterDifference(box1, box2))
     ) yield (box1, box2)
 
-    pairs
-      .filter(singleCharacterDifferent)
-      .head
+    similarPairs.head
   }
 
-  def singleCharacterDifferent(pair: (String, String)): Boolean =
-    singleCharacterDifferent(pair._1, pair._2)
-
-  def singleCharacterDifferent(string1: String, string2: String): Boolean =
+  def hasSingleCharacterDifference(string1: String, string2: String): Boolean =
     string1.zip(string2).count { (chars) => chars._1 != chars._2 } == 1
 
   def common(string1: String, string2: String): String =
