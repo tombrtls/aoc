@@ -7,7 +7,10 @@ object BoxIdFinder {
   }
 
   def findSimilarBoxIds(boxIds: Seq[String]): (String, String) = {
-    val pairs = for(box1 <- boxIds; box2 <- boxIds) yield (box1, box2)
+    val pairs = for(
+      box1 <- boxIds;
+      box2 <- boxIds
+    ) yield (box1, box2)
 
     pairs
       .filter(singleCharacterDifferent)
