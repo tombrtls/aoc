@@ -1,12 +1,18 @@
 package tombrtls.adventofcode.day2
 
-import tombrtls.adventofcode.FileHelper
+import tombrtls.adventofcode.day2.BoxIdFinder.start
+import tombrtls.adventofcode.{Assignment, FileHelper}
 
-object PackageChecksum {
-  val input = FileHelper.readLines("/day2/input.txt")
-  def main(args: Array[String]): Unit = {
-    print(s"Output: ${checksum(input)}")
-  }
+object PackageChecksum extends Assignment[Seq[String], Int] {
+  def main(args: Array[String]): Unit = start
+
+  override val sampleInputFile: String = "/day2/sample.txt"
+  override val sampleExpectation: Int = 2
+  override val inputFile: String = "/day2/input.txt"
+
+  override def processLines(lines: Seq[String]): Seq[String] = lines
+
+  override def implementation(input: Seq[String]): Int = checksum(input)
 
   def checksum(codes: Seq[String]): Int = {
     val doublesAndTripleChecks = for {

@@ -11,6 +11,11 @@ abstract class Assignment[Input, Output] {
 
   def implementation(input: Input): Output
 
+  def start(): Unit = {
+    verify
+    run
+  }
+
   def verify() = {
     val sampleInput = inputFromFile(sampleInputFile)
     val output = implementation(sampleInput)

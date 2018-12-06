@@ -1,13 +1,9 @@
 package tombrtls.adventofcode.day3
 
-import tombrtls.adventofcode.{Assignment, FileHelper}
+import tombrtls.adventofcode.Assignment
 
 object OverlapInFabric extends Assignment[Seq[Square], Int] {
-
-  def main(args: Array[String]): Unit = {
-    verify()
-    run()
-  }
+  def main(args: Array[String]): Unit = start
 
   override val sampleInputFile: String = "/day3/sample.txt"
   override val sampleExpectation: Int = 2
@@ -23,7 +19,6 @@ object OverlapInFabric extends Assignment[Seq[Square], Int] {
     }
 
   override def implementation(input: Seq[Square]): Int = {
-
     0
   }
 }

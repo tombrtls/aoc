@@ -1,13 +1,19 @@
 package tombrtls.adventofcode.day2
 
-import tombrtls.adventofcode.FileHelper
+import tombrtls.adventofcode.{Assignment, FileHelper}
 
-object BoxIdFinder {
+object BoxIdFinder extends Assignment[Seq[String], String]{
+  def main(args: Array[String]): Unit = start
 
-  val input = FileHelper.readLines("/day2/input.txt")
-  def main(args: Array[String]): Unit = {
-    val similarBoxIds = findSimilarBoxIds(input)
-    print(s"Output: ${common(similarBoxIds._1, similarBoxIds._2)}")
+  override val sampleInputFile: String = "/day2/sample.txt"
+  override val sampleExpectation: String = "fgij"
+  override val inputFile: String = "/day2/input.txt"
+
+  override def processLines(lines: Seq[String]): Seq[String] = lines
+
+  override def implementation(input: Seq[String]): String = {
+    val (boxId1, boxId2) = findSimilarBoxIds(input)
+    common(boxId1, boxId2)
   }
 
   def findSimilarBoxIds(boxIds: Seq[String]): (String, String) = {
@@ -24,4 +30,5 @@ object BoxIdFinder {
 
   def common(string1: String, string2: String): String =
     string1.intersect(string2)
+
 }
