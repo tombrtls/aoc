@@ -2,11 +2,11 @@ package tombrtls.adventofcode.day3
 
 import tombrtls.adventofcode.Assignment
 
-object OverlapInFabric extends Assignment[Seq[Square], Int] {
+object SingleClaim extends Assignment[Seq[Square], Int] {
   def main(args: Array[String]): Unit = start
 
   override val sampleInputFile: String = "/day3/sample.txt"
-  override val sampleExpectation: Int = 4
+  override val sampleExpectation: Int = 3
   override val inputFile: String = "/day3/input.txt"
 
   private val squarePattern = "#(\\d*) @ (\\d*),(\\d*): (\\d*)x(\\d*)".r
@@ -18,17 +18,14 @@ object OverlapInFabric extends Assignment[Seq[Square], Int] {
       }
     }
 
-  override def implementation(input: Seq[Square]): Int = tilesOverlap(input)
+  override def implementation(input: Seq[Square]): Int = findSquareWithoutOverlap(input)
 
-  def tilesOverlap(squares: Seq[Square]): Int =
-    squares.flatMap(squaresToCoordinates)
-      .groupBy { coordinates => coordinates }
-      .count { case (_, items) => items.length > 1 }
+  def findSquareWithoutOverlap(squares: Seq[Square]): Int = {
+    val square = squares
+      .find { square =>
+        squares.count(square.intersectsWith) <= 1
+      }
 
-  def squaresToCoordinates(square: Square): Seq[Coordinates] = {
-    for (
-      x <- square.horizontalRange;
-      y <- square.verticalRange
-    ) yield Coordinates(x, y)
+    square.get.id
   }
 }
