@@ -1,8 +1,11 @@
 package tombrtls.adventofcode.day2
 
+import tombrtls.adventofcode.FileHelper
+
 object PackageChecksum {
+  val input = FileHelper.readLines("/day2/input.txt")
   def main(args: Array[String]): Unit = {
-    print(s"Output: ${checksum(PackageData.packageCodes)}")
+    print(s"Output: ${checksum(input)}")
   }
 
   def checksum(codes: Seq[String]): Int = {

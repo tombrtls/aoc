@@ -1,8 +1,12 @@
 package tombrtls.adventofcode.day2
 
+import tombrtls.adventofcode.FileHelper
+
 object BoxIdFinder {
+
+  val input = FileHelper.readLines("/day2/input.txt")
   def main(args: Array[String]): Unit = {
-    val similarBoxIds = findSimilarBoxIds(PackageData.boxIds)
+    val similarBoxIds = findSimilarBoxIds(input)
     print(s"Output: ${common(similarBoxIds._1, similarBoxIds._2)}")
   }
 
