@@ -2,14 +2,14 @@ package tombrtls.adventofcode.day4
 
 import java.time.LocalDate
 
-case class Guard(id: Int, napsByDate: Map[LocalDate, Seq[Int]]) {
+case class Guard(id: Int, minutesAsleepByDate: Map[LocalDate, Seq[Int]]) {
   val totalMinutesAsleep =
-    napsByDate.values
+    minutesAsleepByDate.values
       .flatten
       .reduce(_ + _)
 
   val timesAsleepPerMinute: Map[Int, Int] =
-    napsByDate.values
+    minutesAsleepByDate.values
       .foldLeft(Map[Int, Int]()) { (acc, range) =>
         range.foldLeft(acc) { (acc, minute) =>
           val count = acc.getOrElse(minute, 0)
@@ -17,7 +17,7 @@ case class Guard(id: Int, napsByDate: Map[LocalDate, Seq[Int]]) {
         }
       }
 
-  val minuteTimeMostAsleep: (Int, Int) =
+  private val minuteTimeMostAsleep: (Int, Int) =
     timesAsleepPerMinute.toSeq
       .sortBy(_._2)
       .reverse
