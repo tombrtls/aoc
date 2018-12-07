@@ -17,9 +17,12 @@ case class Guard(id: Int, napsByDate: Map[LocalDate, Seq[Int]]) {
         }
       }
 
-  val minuteAndTimesMostAsleep: (Int, Int) =
+  val minuteTimeMostAsleep: (Int, Int) =
     timesAsleepPerMinute.toSeq
       .sortBy(_._2)
       .reverse
       .head
+
+  val minuteMostAsleep = minuteTimeMostAsleep._1
+  val mostTimesAsleepInAMinute = minuteTimeMostAsleep._2
 }

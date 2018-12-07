@@ -18,6 +18,7 @@ object GuardDutyStrategy2 extends Assignment[Seq[Guard], Int] {
   private val beginsShiftRegex = "Guard #(\\d*) begins shift".r
   private val fallsAsleepString = "falls asleep"
   private val wakesUpString = "wakes up"
+
   override def processLines(lines: Seq[String]): Seq[Guard] = {
     val activities = lines
       .map { line =>
@@ -70,7 +71,6 @@ object GuardDutyStrategy2 extends Assignment[Seq[Guard], Int] {
             val startMinute = fallsAsleep.dateTime.getMinute
             val endMinute = wakesUp.dateTime.getMinute
             val minutes = startMinute until endMinute
-
             map.updated(localDate, currentSleep ++: minutes)
           }
 
@@ -83,10 +83,10 @@ object GuardDutyStrategy2 extends Assignment[Seq[Guard], Int] {
 
   override def implementation(input: Seq[Guard]): Int = {
     val guard = input
-        .sortBy { guard => guard.minuteAndTimesMostAsleep._2 }
+        .sortBy { guard => guard.mostTimesAsleepInAMinute }
         .reverse
         .head
 
-    guard.id * guard.minuteAndTimesMostAsleep._1
+    guard.id * guard.minuteMostAsleep
   }
 }

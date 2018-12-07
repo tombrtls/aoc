@@ -90,9 +90,6 @@ object GuardDutyStrategy1 extends Assignment[Seq[Guard], Int] {
       .reverse
       .head
 
-    val minute = sleepyGuard.minuteAndTimesMostAsleep
-      ._1
-
-    sleepyGuard.id * minute
+    sleepyGuard.id * sleepyGuard.minuteMostAsleep
   }
 }
