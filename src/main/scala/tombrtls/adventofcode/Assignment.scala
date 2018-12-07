@@ -13,7 +13,7 @@ abstract class Assignment[Input, Output] {
 
   def implementation(input: Input): Output
 
-  def start(): Unit = {
+  def startAssignment(): Unit = {
     verify
     run
   }

@@ -3,7 +3,7 @@ package tombrtls.adventofcode.day3
 import tombrtls.adventofcode.Assignment
 
 object SingleClaim extends Assignment[Seq[Square], Int] {
-  def main(args: Array[String]): Unit = start
+  def main(args: Array[String]): Unit = startAssignment
 
   override val day: Int = 3
   override val testCases = Seq(

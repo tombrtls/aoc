@@ -5,7 +5,7 @@ import tombrtls.adventofcode.Assignment
 import scala.annotation.tailrec
 
 object FrequencyDuplicateDetection extends Assignment[Seq[Int], Int] {
-  def main(args: Array[String]): Unit = start
+  def main(args: Array[String]): Unit = startAssignment
 
   override val day: Int = 1
   override val testCases = Seq(

@@ -3,7 +3,7 @@ package tombrtls.adventofcode.day2
 import tombrtls.adventofcode.{Assignment, FileHelper}
 
 object BoxIdFinder extends Assignment[Seq[String], String]{
-  def main(args: Array[String]): Unit = start
+  def main(args: Array[String]): Unit = startAssignment
 
   override val day: Int = 2
   override val testCases = Seq(

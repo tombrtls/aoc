@@ -5,7 +5,7 @@ import java.time.{LocalDate, LocalDateTime}
 import tombrtls.adventofcode.Assignment
 
 object GuardDutyStrategy1 extends Assignment[Seq[Guard], Int] {
-  def main(args: Array[String]): Unit = start
+  def main(args: Array[String]): Unit = startAssignment
 
   override val day: Int = 4
   override val testCases = Seq(
