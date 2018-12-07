@@ -4,14 +4,13 @@ import java.time.{LocalDate, LocalDateTime}
 
 import tombrtls.adventofcode.Assignment
 
-object GuardDutyStrategy2 extends Assignment[Seq[Guard], Int] {
+object ReposeRecordAssignment1 extends Assignment[Seq[Guard], Int] {
   def main(args: Array[String]): Unit = startAssignment
 
   override val day: Int = 4
   override val testCases = Seq(
-    ("sample.txt", 4455)
+    ("sample.txt", 240)
   )
-
   override val inputFileName: String = "input.txt"
 
   private val entryRegex = "\\[(\\d*)-(\\d*)-(\\d*) (\\d*):(\\d*)\\] (.*)".r
@@ -38,22 +37,24 @@ object GuardDutyStrategy2 extends Assignment[Seq[Guard], Int] {
   private def activitiesByGuardId(activities: Seq[Activity]): Map[Int, Seq[Activity]] = {
     var guardId = 0
     activities
-      .foldLeft(Map[Int, Seq[Activity]]()) {
-          case (map, BeginsShift(id, _)) => {
+      .foldLeft(Map[Int, Seq[Activity]]()) { (map, activity) =>
+        activity match {
+          case BeginsShift(id, _) => {
             guardId = id
             map
           }
 
-          case (map, asleep: FallsAsleep) => {
+          case asleep: FallsAsleep => {
             val activities = map.getOrElse(guardId, Seq())
             map.updated(guardId, activities :+ asleep)
           }
 
-          case (map, wakesUp: WakesUp) => {
+          case wakesUp: WakesUp => {
             val activities = map.getOrElse(guardId, Seq())
             map.updated(guardId, activities :+ wakesUp)
           }
         }
+      }
   }
 
   private def activitiesToMinutesSleepingByDate(activities: Seq[Activity]): Map[LocalDate, Seq[Int]] = {
@@ -78,21 +79,20 @@ object GuardDutyStrategy2 extends Assignment[Seq[Guard], Int] {
       .sortBy(_.dateTime)
 
     activitiesByGuardId(sortedActivities)
-        .map { case (guardId, activities) =>
-          val minutesSleepingByDate = activitiesToMinutesSleepingByDate(activities)
-          Guard(guardId, minutesSleepingByDate)
-        }
-        .toSeq
+      .map { case (guardId, activities) =>
+        val minutesSleepingByDate = activitiesToMinutesSleepingByDate(activities)
+        Guard(guardId, minutesSleepingByDate)
+      }
+      .toSeq
   }
 
   implicit val localDateOrdering: Ordering[LocalDateTime] = _ compareTo _
 
   override def implementation(input: Seq[Guard]): Int = {
-    val guard = input
-        .sortBy { guard => guard.mostTimesAsleepInAMinute }
-        .reverse
-        .head
+    val sleepyGuard = input.sortBy(_.totalMinutesAsleep)
+      .reverse
+      .head
 
-    guard.id * guard.minuteMostAsleep
+    sleepyGuard.id * sleepyGuard.minuteMostAsleep
   }
 }

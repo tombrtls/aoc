@@ -2,7 +2,7 @@ package tombrtls.adventofcode.day9
 
 import tombrtls.adventofcode.Assignment
 
-object SampleAssignment extends Assignment[Seq[String], Int] {
+object Assignment1 extends Assignment[Seq[String], Int] {
   def main(args: Array[String]): Unit = startAssignment
 
   override val day: Int = 9

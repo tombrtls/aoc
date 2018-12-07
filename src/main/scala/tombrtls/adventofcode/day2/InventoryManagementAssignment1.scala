@@ -2,7 +2,7 @@ package tombrtls.adventofcode.day2
 
 import tombrtls.adventofcode.Assignment
 
-object PackageChecksum extends Assignment[Seq[String], Int] {
+object InventoryManagementAssignment1 extends Assignment[Seq[String], Int] {
   def main(args: Array[String]): Unit = startAssignment
 
   override val day: Int = 2

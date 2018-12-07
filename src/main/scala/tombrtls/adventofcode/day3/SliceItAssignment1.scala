@@ -2,12 +2,12 @@ package tombrtls.adventofcode.day3
 
 import tombrtls.adventofcode.Assignment
 
-object SingleClaim extends Assignment[Seq[Square], Int] {
+object SliceItAssignment1 extends Assignment[Seq[Square], Int] {
   def main(args: Array[String]): Unit = startAssignment
 
   override val day: Int = 3
   override val testCases = Seq(
-    ("sample.txt", 3)
+    ("sample.txt", 4)
   )
   override val inputFileName: String = "input.txt"
 
@@ -20,14 +20,17 @@ object SingleClaim extends Assignment[Seq[Square], Int] {
       }
     }
 
-  override def implementation(input: Seq[Square]): Int = findSquareWithoutOverlap(input)
+  override def implementation(input: Seq[Square]): Int = tilesOverlap(input)
 
-  def findSquareWithoutOverlap(squares: Seq[Square]): Int = {
-    val square = squares
-      .find { square =>
-        squares.count(square.intersectsWith) <= 1
-      }
+  def tilesOverlap(squares: Seq[Square]): Int =
+    squares.flatMap(squaresToCoordinates)
+      .groupBy { coordinates => coordinates }
+      .count { case (_, items) => items.length > 1 }
 
-    square.get.id
+  def squaresToCoordinates(square: Square): Seq[Coordinates] = {
+    for (
+      x <- square.horizontalRange;
+      y <- square.verticalRange
+    ) yield Coordinates(x, y)
   }
 }

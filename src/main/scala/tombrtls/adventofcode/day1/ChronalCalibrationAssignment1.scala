@@ -2,7 +2,7 @@ package tombrtls.adventofcode.day1
 
 import tombrtls.adventofcode.Assignment
 
-object FrequencyChanges extends Assignment[Seq[Int], Int] {
+object ChronalCalibrationAssignment1 extends Assignment[Seq[Int], Int] {
   def main(args: Array[String]): Unit = startAssignment
 
   override val day: Int = 1
