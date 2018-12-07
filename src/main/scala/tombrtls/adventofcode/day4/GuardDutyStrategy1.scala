@@ -60,17 +60,16 @@ object GuardDutyStrategy1 extends Assignment[Seq[Guard], Int] {
   private def activitiesToMinutesSleepingByDate(activities: Seq[Activity]): Map[LocalDate, Seq[Int]] = {
     activities
       .grouped(2)
-      .foldLeft(Map[LocalDate, Seq[Int]]()) { (map, guardActivities) =>
-        val fallsAsleep = guardActivities(0).asInstanceOf[FallsAsleep]
-        val wakesUp = guardActivities(1).asInstanceOf[WakesUp]
+      .foldLeft(Map[LocalDate, Seq[Int]]()) {
+        case (map, Seq(fallsAsleep: FallsAsleep, wakesUp: WakesUp)) => {
+          val localDate = fallsAsleep.dateTime.toLocalDate
+          val currentSleep = map.getOrElse(localDate, Seq())
 
-        val localDate = fallsAsleep.dateTime.toLocalDate
-        val currentSleep = map.getOrElse(localDate, Seq())
-
-        val startMinute = fallsAsleep.dateTime.getMinute
-        val endMinute = wakesUp.dateTime.getMinute
-        val minutes = startMinute until endMinute
-        map.updated(localDate, currentSleep ++: minutes)
+          val startMinute = fallsAsleep.dateTime.getMinute
+          val endMinute = wakesUp.dateTime.getMinute
+          val minutes = startMinute until endMinute
+          map.updated(localDate, currentSleep ++: minutes)
+        }
       }
   }
 
