@@ -5,9 +5,11 @@ import tombrtls.adventofcode.Assignment
 object SingleClaim extends Assignment[Seq[Square], Int] {
   def main(args: Array[String]): Unit = start
 
-  override val sampleInputFile: String = "/day3/sample.txt"
-  override val sampleExpectation: Int = 3
-  override val inputFile: String = "/day3/input.txt"
+  override val day: Int = 3
+  override val testCases = Seq(
+    ("sample.txt", 3)
+  )
+  override val inputFileName: String = "input.txt"
 
   private val squarePattern = "#(\\d*) @ (\\d*),(\\d*): (\\d*)x(\\d*)".r
   override def processLines(lines: Seq[String]): Seq[Square] =

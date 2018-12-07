@@ -2,10 +2,12 @@ package tombrtls.adventofcode
 
 abstract class Assignment[Input, Output] {
 
-  val sampleInputFile: String
-  val sampleExpectation: Output
+  type TestCase = (String, Output)
 
-  val inputFile: String
+  val day: Int
+  val testCases: Seq[TestCase]
+
+  val inputFileName: String
 
   def processLines(lines: Seq[String]): Input
 
@@ -16,23 +18,28 @@ abstract class Assignment[Input, Output] {
     run
   }
 
-  def verify() = {
-    val sampleInput = inputFromFile(sampleInputFile)
-    val output = implementation(sampleInput)
-
+  private def verify() = {
     println("Verification")
     println("----------------------------")
-    if (output == sampleExpectation) {
-      println(s"Success ✔️: '${output}' is equal to '${sampleExpectation}'")
-    } else {
-      println(s"failure 🛑: '${output}' is NOT equal to '${sampleExpectation}'")
+
+    testCases.foreach { case (fileName, expectedOutput) =>
+      val sampleInput = inputFromFile(fileName)
+      val output = implementation(sampleInput)
+      println(s"Input: ${fileName}")
+      if (output == expectedOutput) {
+        println(s"Success ✔️: '${output}' is equal to '${expectedOutput}'")
+      } else {
+        println(s"failure 🛑: '${output}' is NOT equal to '${expectedOutput}'")
+      }
+      println("")
     }
     println("----------------------------")
     println("")
+    println("")
   }
 
-  def run() = {
-    val input = inputFromFile(inputFile)
+  private def run() = {
+    val input = inputFromFile(inputFileName)
     val output = implementation(input)
     println("Run")
     println("----------------------------")
@@ -41,6 +48,8 @@ abstract class Assignment[Input, Output] {
     println("")
   }
 
-  private def inputFromFile(file: String): Input =
-    processLines(FileHelper.readLines(file))
+  private def inputFromFile(file: String): Input = {
+    val dir = s"/day$day/$file"
+    processLines(FileHelper.readLines(dir))
+  }
 }

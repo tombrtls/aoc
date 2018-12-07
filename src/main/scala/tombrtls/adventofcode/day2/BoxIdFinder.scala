@@ -5,9 +5,11 @@ import tombrtls.adventofcode.{Assignment, FileHelper}
 object BoxIdFinder extends Assignment[Seq[String], String]{
   def main(args: Array[String]): Unit = start
 
-  override val sampleInputFile: String = "/day2/sample.txt"
-  override val sampleExpectation: String = "fgij"
-  override val inputFile: String = "/day2/input.txt"
+  override val day: Int = 2
+  override val testCases = Seq(
+    ("sample.txt", "fgij")
+  )
+  override val inputFileName: String = "input.txt"
 
   override def processLines(lines: Seq[String]): Seq[String] = lines
 
@@ -30,5 +32,4 @@ object BoxIdFinder extends Assignment[Seq[String], String]{
 
   def common(string1: String, string2: String): String =
     string1.intersect(string2)
-
 }

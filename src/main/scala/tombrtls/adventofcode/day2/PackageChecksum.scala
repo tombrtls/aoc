@@ -1,14 +1,15 @@
 package tombrtls.adventofcode.day2
 
-import tombrtls.adventofcode.day2.BoxIdFinder.start
-import tombrtls.adventofcode.{Assignment, FileHelper}
+import tombrtls.adventofcode.Assignment
 
 object PackageChecksum extends Assignment[Seq[String], Int] {
   def main(args: Array[String]): Unit = start
 
-  override val sampleInputFile: String = "/day2/sample.txt"
-  override val sampleExpectation: Int = 2
-  override val inputFile: String = "/day2/input.txt"
+  override val day: Int = 2
+  override val testCases = Seq(
+    ("sample.txt", 2)
+  )
+  override val inputFileName: String = "input.txt"
 
   override def processLines(lines: Seq[String]): Seq[String] = lines
 

@@ -3,9 +3,9 @@ package tombrtls.adventofcode.sample
 import tombrtls.adventofcode.Assignment
 
 object SampleAssignment extends Assignment[Seq[String], Int] {
-  override val sampleInputFile: String = _
-  override val sampleExpectation: Int = _
-  override val inputFile: String = _
+  override val day: Int = 1
+  override val testCases: Seq[(String, Int)] = Seq()
+  override val inputFileName: String = "input.txt"
 
   override def processLines(lines: Seq[String]): Seq[String] = ???
 
