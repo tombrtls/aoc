@@ -2,12 +2,12 @@ package tombrtls.adventofcode.day6
 
 import tombrtls.adventofcode.Assignment
 
-object ChronalCoordinatesAssignment1 extends Assignment[Seq[Location], Int] {
+object ChronalCoordinatesAssignment2 extends Assignment[Seq[Location], Int] {
   def main(args: Array[String]): Unit = startAssignment
 
   override val day: Int = 6
   override val testCases: Seq[(String, Int)] = Seq(
-    ("sample.txt", 17)
+    ("sample.txt", 16)
   )
 
   override val inputFileName: String = "input.txt"
@@ -27,11 +27,25 @@ object ChronalCoordinatesAssignment1 extends Assignment[Seq[Location], Int] {
     val maxY = input.maxBy(_.coordinate.y).coordinate.y
     val bounds = Bounds(maxX + 1, maxY + 1)
 
-    bounds
-      .locationsToClosestCoordinates(input)
-      .filter { case (_, coordinates) => coordinates.exists(bounds.isOnTheEdge) == false }
-      .mapValues { _.length }
-      .values
-      .max
+    val locationAndDistance = for (
+      coordinate <- bounds.allCoordinates;
+      location <- input;
+      distance = location.distance(coordinate)
+    ) yield (coordinate, distance)
+
+    val locationsToTotalDistance = locationAndDistance
+      .foldLeft(Map[Coordinate, Int]()) { (acc, locationAndDistance) =>
+        val distance = acc.getOrElse(locationAndDistance._1, 0)
+        acc.updated(locationAndDistance._1, distance + locationAndDistance._2)
+      }
+
+    locationsToTotalDistance
+      .count(_._2 < 10000)
+
+//    val maxDistance = locationsToTotalDistance
+//      .values
+//      .max
+
+//    locationsToTotalDistance.count { case (_, distance) => distance == maxDistance}
   }
 }
