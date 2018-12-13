@@ -2,9 +2,8 @@ package tombrtls.adventofcode.day7
 
 import tombrtls.adventofcode.Assignment
 
-case class Dependency(dependency: String, task: String)
 
-object SumOfPartsAssignment1 extends Assignment[Seq[Dependency], String] {
+object SumOfPartsAssignment1 extends Assignment[Instructions, String] {
   def main(args: Array[String]): Unit = startAssignment
 
   override val day: Int = 7
@@ -15,36 +14,34 @@ object SumOfPartsAssignment1 extends Assignment[Seq[Dependency], String] {
   override val inputFileName: String = "input.txt"
 
   val regexp = "Step ([a-zA-Z]*) must be finished before step ([a-zA-Z]*) can begin.".r
-  override def processLines(lines: Seq[String]): Seq[Dependency] =
-    lines.map {
-      case regexp(dependency, task) => Dependency(dependency, task)
-    }
+  override def processLines(lines: Seq[String]): Instructions = {
+    val tasksAndDependency = lines
+      .map { case regexp(dependency, task) => (task, dependency) }
 
-  override def implementation(input: Seq[Dependency]): String = {
-    val tasks = input.map(_.task).toSet
-    val dependencies = input.map(_.dependency).toSet
-    val startingPoint = dependencies.diff(tasks).head
-    val dependentMap = input
-      .map { task => (task.dependency, task.task) }
-      .groupBy(_._1)
-      .mapValues(_.map(_._2))
-    def inner(acc: String, tasks: Seq[String]): String = {
-      tasks match {
-        case x +: xs => {
-          val string = acc ++ x
-          dependentMap.get(x) match {
-            case None => inner(string, xs)
-            case Some(followUps) =>  {
-              val allTasks = xs ++ followUps
-              inner(string, allTasks.sorted)
-            }
-          }
-        }
-        case Seq(x) => acc ++ x
-        case Seq() => acc
+    val tasksToDependencies = tasksAndDependency
+      .flatMap { tasksAndDependency => Seq(tasksAndDependency._1, tasksAndDependency._2) }
+      .toSet
+      .foldLeft(Map[String, Set[String]]()) { (map, task) => map.updated(task.toString, Set()) }
+
+    val tasks = tasksAndDependency
+      .foldLeft(tasksToDependencies) { (acc, taskAndDependency) =>
+        val dependencies = acc.getOrElse(taskAndDependency._1, Set())
+        val newDependencies = dependencies ++ Set(taskAndDependency._2)
+        acc.updated(taskAndDependency._1, newDependencies)
       }
+      .map { case (task, dependencies) => Task(task, dependencies)}
 
+    Instructions(tasks.toSeq, Set())
+  }
+
+  override def implementation(input: Instructions): String = {
+    completeNextTask(input, "")
+  }
+
+  def completeNextTask(input: Instructions, output: String): String = {
+    input.availableTasks match {
+      case x +: _ => completeNextTask(input.completeTask(x), output + x)
+      case Nil => output
     }
-    inner("", Seq(startingPoint))
   }
 }
