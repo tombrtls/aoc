@@ -1,6 +1,6 @@
 package tombrtls.adventofcode.day7
 
-case class Instructions(tasks: Seq[Task], completedTasks: Set[String] = Set()) {
+case class Instructions(tasks: Seq[Task], completedTasks: Set[Char] = Set()) {
   val availableTasks =
     tasks
       .filterNot { task => isCompleted(task.name) }
@@ -9,7 +9,7 @@ case class Instructions(tasks: Seq[Task], completedTasks: Set[String] = Set()) {
       .sorted
 
 
-  def isCompleted(task: String): Boolean = completedTasks.contains(task)
-  def completeTask(task: String): Instructions =
+  def isCompleted(task: Char): Boolean = completedTasks.contains(task)
+  def completeTask(task: Char): Instructions =
     Instructions(tasks, completedTasks ++ Seq(task))
 }

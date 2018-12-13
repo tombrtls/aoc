@@ -3,18 +3,18 @@ package tombrtls.adventofcode.day7
 import tombrtls.adventofcode.Assignment
 
 
-object SumOfPartsAssignment1 extends Assignment[Instructions, String] {
+object SumOfPartsAssignment2 extends Assignment[TimeInstructions, Int] {
   def main(args: Array[String]): Unit = startAssignment
 
   override val day: Int = 7
-  override val testCases: Seq[(String, String)] = Seq(
-    ("sample.txt", "CABDFE")
+  override val testCases: Seq[(String, Int)] = Seq(
+    ("sample.txt", 15)
   )
 
   override val inputFileName: String = "input.txt"
 
   val regexp = "Step ([a-zA-Z]*) must be finished before step ([a-zA-Z]*) can begin.".r
-  override def processLines(lines: Seq[String]): Instructions = {
+  override def processLines(lines: Seq[String]): TimeInstructions = {
     val tasksAndDependency = lines
       .map { case regexp(dependency, task) => (task.head, dependency.head) }
 
@@ -31,17 +31,20 @@ object SumOfPartsAssignment1 extends Assignment[Instructions, String] {
       }
       .map { case (task, dependencies) => Task(task, dependencies)}
 
-    Instructions(tasks.toSeq, Set())
+    TimeInstructions(tasks.toSeq, 0, Map(), 60)
   }
 
-  override def implementation(input: Instructions): String = {
-    completeNextTask(input, "")
+  override def implementation(input: TimeInstructions): Int = {
+    completeNextTask(input)
   }
 
-  def completeNextTask(input: Instructions, output: String): String = {
-    input.availableTasks match {
-      case x +: _ => completeNextTask(input.completeTask(x), output + x)
-      case Nil => output
+  def completeNextTask(input: TimeInstructions): Int = {
+    val startedInstructions = input.startMaximumNumberOfTasks(5)
+
+    if (startedInstructions.active) {
+      completeNextTask(startedInstructions.proceedSecond)
+    } else {
+      startedInstructions.time
     }
   }
 }
