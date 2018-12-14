@@ -1,7 +1,6 @@
 package tombrtls.adventofcode.day9
 
 import tombrtls.adventofcode.Assignment
-import scala.collection.JavaConverters._
 
 
 object MarbleManiaAssignment1 extends Assignment[(Int, Int), Long] {
@@ -21,7 +20,7 @@ object MarbleManiaAssignment1 extends Assignment[(Int, Int), Long] {
   val gameRegex = "(\\d*) players; last marble is worth (\\d*) points".r
   override def processLines(lines: Seq[String]): (Int, Int) = {
     lines.head match {
-      case gameRegex(players, marble) => (players.toInt, marble.toInt)
+      case gameRegex(players, marble) => (players.toInt, marble.toInt * 100)
     }
   }
 

@@ -1,30 +1,25 @@
 package tombrtls.adventofcode.day9
 
-case class Game(numberOfPlayers: Int, maxMarble: Int, circle: Circle, scores: Seq[Int]) {
+case class Game(circle: Circle[Int], scores: List[Long]) {
   def playMarble(marble: Int): Game = {
     marble match {
-      case special if marble != 0 && marble % 23 == 0 => {
+      case special if marble % 23 == 0 => {
         val playerIndex = (marble - 1) % scores.length
         val currentScore = scores(playerIndex)
-        val (value, newCircle) = circle.remove7nthMarbleFromActive
 
-        this.copy(
-          scores = scores.updated(playerIndex, currentScore + marble + value),
-          circle = newCircle
-        )
+        val node = circle.rotate(-7)
+        Game(node.removed(), scores.updated(playerIndex, currentScore + marble + node.value))
       }
+
       case marble => {
-        this.copy(
-          circle = circle.placeMarble(marble)
-        )
+        Game(circle.rotate(2).inserted(marble), scores)
       }
     }
   }
 }
 
 object Game {
-  def apply(numberOfPlayers: Int, maxMarble: Int): Game = {
-    val scores = List.fill(numberOfPlayers)(0)
-    Game(numberOfPlayers, maxMarble, Circle(List(0), 0), scores)
+  def apply(numberOfPlayers: Int): Game = {
+    new Game(Circle(0), List.fill(numberOfPlayers)(0))
   }
 }
