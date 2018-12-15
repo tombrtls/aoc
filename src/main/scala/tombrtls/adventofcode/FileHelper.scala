@@ -1,5 +1,7 @@
 package tombrtls.adventofcode
 
+import java.io.{File, PrintWriter, Writer}
+
 import scala.io.Source
 
 object FileHelper {
@@ -16,4 +18,17 @@ object FileHelper {
     } finally {
       resource.close()
     }
+
+  def fileWriter(resourcePath: String, write: (Writer) => Unit): Unit = {
+    val file = new File(resourcePath)
+    if (file.exists() == false) {
+      file.createNewFile()
+    } else {
+      file.delete()
+      file.createNewFile()
+    }
+    using (new PrintWriter(file)) { writer =>
+      write(writer)
+    }
+  }
 }

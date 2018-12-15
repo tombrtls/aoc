@@ -48,8 +48,11 @@ abstract class Assignment[Input, Output] {
     println("")
   }
 
-  private def inputFromFile(file: String): Input = {
-    val dir = s"/day$day/$file"
+  protected def urlForFileName(file: String): String =
+    s"/day$day/$file"
+
+  protected def inputFromFile(file: String): Input = {
+    val dir = urlForFileName(file)
     processLines(FileHelper.readLines(dir))
   }
 }

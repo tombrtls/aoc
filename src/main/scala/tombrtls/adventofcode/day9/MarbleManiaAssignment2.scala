@@ -3,7 +3,7 @@ package tombrtls.adventofcode.day9
 import tombrtls.adventofcode.Assignment
 
 
-object MarbleManiaAssignment1 extends Assignment[(Int, Int), Long] {
+object MarbleManiaAssignment2 extends Assignment[(Int, Int), Long] {
   def main(args: Array[String]): Unit = startAssignment
 
   override val day: Int = 9
