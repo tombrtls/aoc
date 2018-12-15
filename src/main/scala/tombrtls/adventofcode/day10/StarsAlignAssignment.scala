@@ -2,7 +2,6 @@ package tombrtls.adventofcode.day10
 
 import java.io.Writer
 
-import javax.print.attribute.standard.MediaSize.Other
 import tombrtls.adventofcode.{Assignment, FileHelper}
 
 case class Vector2(x: Int, y: Int) {
@@ -40,7 +39,7 @@ case class Bounds(x: Int, y: Int, width: Int, height: Int) {
   val horizontalRange = x to x + width
   val verticalRange = y to y + height
   val surface = width * height
-  val distance = Math.abs(horizontalRange.end - horizontalRange.start) + Math.abs(verticalRange.end - verticalRange.start)
+  val distance = width + height
 }
 
 object Bounds {
@@ -93,7 +92,7 @@ case class Sky(stars: Seq[Star]) {
   }
 }
 
-object StarsAlignAssignment1 extends Assignment[Sky, Int] {
+object StarsAlignAssignment extends Assignment[Sky, Int] {
   def main(args: Array[String]): Unit = startAssignment
 
   override val day: Int = 10
@@ -113,9 +112,9 @@ object StarsAlignAssignment1 extends Assignment[Sky, Int] {
   override def implementation(input: Sky): Int = {
     val output = iterate(input, 0)
 
-    FileHelper.fileWriter(s"output/output_${output._1}.txt", (writer) => {
-      output._2.writeToFile(writer)
-    })
+//    FileHelper.fileWriter(s"output/output_${output._1}.txt", (writer) => {
+//      output._2.writeToFile(writer)
+//    })
 
     output._1
   }
