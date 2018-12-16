@@ -1,8 +1,9 @@
-package tombrtls.adventofcode.day11
+package tombrtls.adventofcode.day1171
 
 import tombrtls.adventofcode.day11.ChronalChargeAssignment2._
 import tombrtls.adventofcode.day11.ChronalChargeHelper._
 import org.scalatest.{FunSpec, Matchers}
+import tombrtls.adventofcode.day11.FuelCell
 import tombrtls.adventofcode.{Vector2, day11}
 
 import scala.None

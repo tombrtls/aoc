@@ -79,7 +79,7 @@ object ChronalChargeHelper {
       bottomRight - bottomLeft - topRight + topLeft
     }
   }
-  
+
   case class NaivePowerMap(serialNumber: Int, powerlevelF: (Int, Int, Int) => Int) extends PowerMap {
     private val powerLevels = new Array[Array[Int]](300)
     for (x <- 0 until 300) {
