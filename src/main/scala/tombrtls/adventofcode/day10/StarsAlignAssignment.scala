@@ -2,38 +2,7 @@ package tombrtls.adventofcode.day10
 
 import java.io.Writer
 
-import tombrtls.adventofcode.{Assignment, FileHelper}
-
-case class Vector2(x: Int, y: Int) {
-  def plus(other: Vector2): Vector2 = {
-    Vector2(x + other.x, y + other.y)
-  }
-
-  def minus(other: Vector2): Vector2 = {
-    Vector2(x - other.x, y - other.y)
-  }
-
-  def mutliply(scaler: Int): Vector2 = {
-    Vector2(x * scaler, y * scaler)
-  }
-
-  def + (other: Vector2): Vector2 = {
-    this.plus(other)
-  }
-
-  def - (other: Vector2): Vector2 = {
-    this.minus(other)
-  }
-
-  def * (scaler: Int): Vector2 = {
-    this.mutliply(scaler)
-  }
-}
-
-object Vector2 {
-  val min = Vector2(Int.MinValue, Int.MinValue)
-  val max = Vector2(Int.MaxValue, Int.MaxValue)
-}
+import tombrtls.adventofcode.{Assignment, FileHelper, Vector2}
 
 case class Bounds(x: Int, y: Int, width: Int, height: Int) {
   val horizontalRange = x to x + width
