@@ -40,6 +40,8 @@ case class Vector2(x: Int, y: Int) {
   def * (scaler: Int): Vector2 = {
     this.mutliply(scaler)
   }
+
+  override def toString = s"<$x, $y>"
 }
 
 object Vector2 {
