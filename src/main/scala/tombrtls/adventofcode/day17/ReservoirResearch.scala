@@ -170,16 +170,14 @@ class UndergroundMap(clayRanges: Seq[ClayRange]) {
 
 object ReservoirResearch {
   def main(args: Array[String]): Unit = {
-    val lines = FileHelper.readLines("/day15/input.txt")
+    val lines = FileHelper.readLines("/day17/input.txt")
 
     val regexp = "([xy])=(\\d*), ([xy])=(\\d*)..(\\d*)".r
     val ranges = lines.map {
-      case regexp(xOrY, point, xOrY2, startingPoint, endPoint) => {
+      case regexp(_, point, xOrY2, startingPoint, endPoint) => {
         ClayRange(point.toInt, Dimension(xOrY2.head), startingPoint.toInt to endPoint.toInt)
       }
     }
-
-
 
     val undergroundMap = new UndergroundMap(ranges)
     println(s"${undergroundMap}")
