@@ -47,4 +47,19 @@ case class Vector2(x: Int, y: Int) {
 object Vector2 {
   val min = Vector2(Int.MinValue, Int.MinValue)
   val max = Vector2(Int.MaxValue, Int.MaxValue)
+
+  val Down = Vector2(0, 1)
+  val Up = Vector2(0, -1)
+  val Left = Vector2(-1, 0)
+  val Right = Vector2(1, 0)
+  val SurroundingVectors = Set(
+    Vector2.Up,
+    Vector2.Up + Vector2.Right,
+    Vector2.Right,
+    Vector2.Down + Vector2.Right,
+    Vector2.Down,
+    Vector2.Down + Vector2.Left,
+    Vector2.Left,
+    Vector2.Up + Vector2.Left
+  )
 }
