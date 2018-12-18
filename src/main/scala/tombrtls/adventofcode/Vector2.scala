@@ -41,12 +41,18 @@ case class Vector2(x: Int, y: Int) {
     this.mutliply(scaler)
   }
 
+  def up = this + Vector2.Up
+  def down = this + Vector2.Down
+  def left = this + Vector2.Left
+  def right = this + Vector2.Right
+  def surrounding = Vector2.SurroundingVectors.map(this + _).toSeq
+
   override def toString = s"<$x, $y>"
 }
 
 object Vector2 {
-  val min = Vector2(Int.MinValue, Int.MinValue)
-  val max = Vector2(Int.MaxValue, Int.MaxValue)
+  val Min = Vector2(Int.MinValue, Int.MinValue)
+  val Max = Vector2(Int.MaxValue, Int.MaxValue)
 
   val Down = Vector2(0, 1)
   val Up = Vector2(0, -1)

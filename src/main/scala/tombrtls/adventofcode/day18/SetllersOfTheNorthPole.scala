@@ -1,6 +1,6 @@
 package tombrtls.adventofcode.day18
 
-import tombrtls.adventofcode.{FileHelper, Vector2}
+import tombrtls.adventofcode.{FileHelper, Grid, Vector2}
 
 sealed abstract class Acre {
   override def toString: String = this match {
@@ -22,74 +22,40 @@ final case object Ground extends Acre
 final case object Trees extends Acre
 final case object Lumberyard extends Acre
 
-case class Area(maxX: Int, maxY: Int, map: Array[Array[Acre]]) {
-  def acreAt(location: Vector2): Acre = {
-    map(location.y)(location.x)
-  }
-
+case class Area(grid: Grid[Acre]) {
   def progress: Area = {
-    val newMap = new Array[Array[Acre]](maxY + 1)
-    for (y <- 0 to maxY) {
-      val newInnerMap = new Array[Acre](maxX + 1)
-      newMap.update(y, newInnerMap)
-      for (x <- 0 to maxX; location = Vector2(x, y)) {
-        val acres = surroundingAcre(location)
-        val newAcre = acreAt(location) match {
-          case Ground if (acres.count(_ == Trees) >= 3) => Trees
-          case Trees if (acres.count(_ == Lumberyard) >= 3) => Lumberyard
-          case Lumberyard if (acres.count(_ == Lumberyard) < 1 || acres.count(_ == Trees) < 1) => Ground
-          case acre => acre
-        }
-        newInnerMap.update(x, newAcre)
+    val newGrid = grid.process { (location, value) =>
+      val acres = location.surrounding.filter(grid.isLocationInGrid).map(grid.itemAt(_))
+      value match {
+        case Ground if (acres.count(_ == Trees) >= 3) => Trees
+        case Trees if (acres.count(_ == Lumberyard) >= 3) => Lumberyard
+        case Lumberyard if (acres.count(_ == Lumberyard) < 1 || acres.count(_ == Trees) < 1) => Ground
+        case acre => acre
       }
     }
 
-    Area(maxX, maxY, newMap)
-  }
-
-  def vectorInRange(vector: Vector2): Boolean = {
-    vector.x >= 0 && vector.y >= 0 && vector.x <= maxX && vector.y <= maxY
-  }
-
-  def surroundingAcre(vector: Vector2): List[Acre] = {
-    Vector2.SurroundingVectors.map(_ + vector)
-      .filter(vectorInRange)
-      .toList
-      .map(acreAt)
+    Area(newGrid)
   }
 
   def score = {
-    val allAcres = map.flatMap { acres => acres }
+    val allAcres = grid.allItems
     val numberOfWood = allAcres.count(_ == Trees)
     val numberOfLumberYards = allAcres.count(_ == Lumberyard)
     numberOfWood * numberOfLumberYards
   }
 
-  override def toString: String = {
-    map.map(_.mkString(" "))
-      .mkString("\r\n")
-  }
+  override def toString: String = grid.toString
 }
 
-object SampleAssignment  {
+object SetllersOfTheNorthPole  {
 
   def main(args: Array[String]): Unit = {
 
     val lines = FileHelper.readLines("/day18/input.txt")
-    val maxY = lines.length - 1
-    val maxX = lines.head.length - 1
-    val map = new Array[Array[Acre]](maxY + 1)
-    for ((line, y) <- lines.zipWithIndex) {
-      val innerMap = new Array[Acre](maxX + 1)
-      map.update(y, innerMap)
-
-      for ((char, x) <- line.zipWithIndex) {
-        innerMap.update(x, Acre.fromChar(char))
-      }
-    }
+    val grid: Grid[Acre] = Grid.from(lines, Acre.fromChar)
 
     def assignment1: Unit = {
-      val area = (0 until 10).foldLeft(Area(maxX, maxY, map)) { (area, _) => area.progress }
+      val area = (0 until 10).foldLeft(Area(grid)) { (area, _) => area.progress }
       println("Assignment 1")
       println(s"Score: ${area.score}")
     }
@@ -110,7 +76,7 @@ object SampleAssignment  {
         }
       }
 
-      val area = Area(maxX, maxY, map)
+      val area = Area(grid)
       val (newArea, indices) = findIndicesForSameScore(area, Map().withDefaultValue(List.empty), 1)
       val Seq(last, secondLast) = indices.reverse.take(2)
       val indexDelta = last - secondLast

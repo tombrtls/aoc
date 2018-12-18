@@ -93,10 +93,6 @@ class UndergroundMap(clayRanges: Seq[ClayRange]) {
     map(location.y - minY).update(location.x - minX, material)
   }
 
-  val down = Vector2(0, 1)
-  val up = Vector2(0, -1)
-  val left = Vector2(-1, 0)
-  val right = Vector2(1, 0)
   def runWater(vector: Vector2): Unit = {
     runWaterDown(Vector2(vector.x, minY + 1))
   }
@@ -113,7 +109,7 @@ class UndergroundMap(clayRanges: Seq[ClayRange]) {
       val nextVector = vector + direction
       val nextMaterial = materialAtLocation(nextVector)
 
-      val nextBelowVector = nextVector + down
+      val nextBelowVector = nextVector + Vector2.Down
       val nextBelowMaterial = materialAtLocation(nextBelowVector)
       if (nextMaterial == Clay) {
         (true, nextVector)
@@ -124,8 +120,8 @@ class UndergroundMap(clayRanges: Seq[ClayRange]) {
       }
     }
 
-    val (hasLeftEdge, maxLeftLocation) = runWaterSideways(vector, left)
-    val (hasRightEdge, maxRightLocation) = runWaterSideways(vector, right)
+    val (hasLeftEdge, maxLeftLocation) = runWaterSideways(vector, Vector2.Left)
+    val (hasRightEdge, maxRightLocation) = runWaterSideways(vector, Vector2.Right)
 
     if (hasLeftEdge && hasRightEdge) {
       for (x <- maxLeftLocation.x + 1 until maxRightLocation.x) {
@@ -150,12 +146,12 @@ class UndergroundMap(clayRanges: Seq[ClayRange]) {
 
   @tailrec
   private def runWaterDown(vector: Vector2): Unit = {
-    var nextVector = vector + down
+    var nextVector = vector + Vector2.Down
     if (nextVector.y <= maxY) {
       materialAtLocation(nextVector) match {
         case material if (material.isSolid) => {
           if (runWaterSideways(vector)) {
-            runWaterDown(nextVector + up + up)
+            runWaterDown(nextVector + Vector2.Up + Vector2.Up)
           }
         }
         case Sand => {
