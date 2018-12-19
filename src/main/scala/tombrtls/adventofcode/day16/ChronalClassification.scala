@@ -2,63 +2,6 @@ package tombrtls.adventofcode.day16
 
 import tombrtls.adventofcode.FileHelper
 
-case class Sample(opsCode: Int, before: List[Int], operation: List[Int], after: List[Int])
-
-sealed abstract class Operation {
-  def execute(stack: List[Int], input: List[Int]): List[Int] = {
-    val Seq(a, b, output) = input
-    val value = this match {
-      case AddR => stack(a) + stack(b)
-      case AddI => stack(a) + b
-      case MultiR => stack(a) * stack(b)
-      case MultiI => stack(a) * b
-      case BanR => stack(a) & stack(b)
-      case BanI => stack(a) & b
-      case BorR => stack(a) | stack(b)
-      case BorI => stack(a) | b
-      case SetR => stack(a)
-      case SetI => a
-      case GreaterThanIR => if (a > stack(b)) 1 else 0
-      case GreaterThanRI => if (stack(a) > b) 1 else 0
-      case GreaterThanRR => if (stack(a) > stack(b)) 1 else 0
-      case EqualIR => if (a == stack(b)) 1 else 0
-      case EqualRI => if (stack(a) == b) 1 else 0
-      case EqualRR => if (stack(a) == stack(b)) 1 else 0
-    }
-
-    stack.updated(output, value)
-  }
-}
-
-object Operation {
-  val allOperations = Set(
-    AddR, AddI,
-    MultiI, MultiR,
-    BanR, BanI,
-    BorR, BorI,
-    SetR, SetI,
-    GreaterThanIR, GreaterThanRI, GreaterThanRR,
-    EqualIR, EqualRI, EqualRR)
-}
-
-case object AddR extends Operation
-case object AddI extends Operation
-case object MultiR extends Operation
-case object MultiI extends Operation
-case object BanR extends Operation
-case object BanI extends Operation
-case object BorR extends Operation
-case object BorI extends Operation
-case object SetR extends Operation
-case object SetI extends Operation
-case object GreaterThanIR extends Operation
-case object GreaterThanRI extends Operation
-case object GreaterThanRR extends Operation
-case object EqualIR extends Operation
-case object EqualRI extends Operation
-case object EqualRR extends Operation
-
-
 object ChronalClassification {
 
   val registerRegexp = """.*\[(\d*), (\d*), (\d*), (\d*)\]""".r
@@ -77,7 +20,7 @@ object ChronalClassification {
     val stack = instructions.foldLeft(List(0, 0, 0, 0)) { (stack, instruction) =>
       val Seq(opcode, a, b, c) = instruction
       val operation = opcodeToOperation(opcode)
-      operation.execute(stack, List(a, b, c))
+      operation.execute(stack, a, b, c)
     }
 
     println(s"${stack(0)}")
@@ -99,15 +42,16 @@ object ChronalClassification {
           case registerRegexp(first, second, third, fourth) => Seq(first, second, third, fourth).map(_.toInt)
         }
 
-        Sample(instructions.head, before.toList, instructions.tail.toList, after.toList)
+        val Seq(a, b, c) = instructions.tail
+        OperationSample(instructions.head, before.toList, a, b, c, after.toList)
       }
       .toList
   }
 
-  def executeOperationsOnSamples(samples: Seq[Sample], operations: Set[Operation]): Map[Sample, Set[Operation]] = {
-    var sampleToOperations: Map[Sample, Set[Operation]] = Map.empty.withDefaultValue(Set.empty)
+  def executeOperationsOnSamples(samples: Seq[OperationSample], operations: Set[Operation]): Map[OperationSample, Set[Operation]] = {
+    var sampleToOperations: Map[OperationSample, Set[Operation]] = Map.empty.withDefaultValue(Set.empty)
     for (sample <- samples; operation <- Operation.allOperations) {
-      operation.execute(sample.before, sample.operation) == sample.after match {
+      operation.execute(sample.before, sample.a, sample.b, sample.c) == sample.after match {
         case true => {
           val operations = sampleToOperations(sample)
           sampleToOperations = sampleToOperations.updated(sample, operations + operation)
@@ -120,7 +64,7 @@ object ChronalClassification {
     sampleToOperations
   }
 
-  def determineOpcodeToOperation(sampleToOperations: Map[Sample, Set[Operation]]): Map[Int, Operation] = {
+  def determineOpcodeToOperation(sampleToOperations: Map[OperationSample, Set[Operation]]): Map[Int, Operation] = {
     val opcodeToOperations = sampleToOperations
       .groupBy(_._1.opsCode)
       .mapValues { _.values }
@@ -137,7 +81,8 @@ object ChronalClassification {
 
   def tests = {
     def test(operation: Operation, opsInput: List[Int], inputStack: List[Int], expected: Seq[Int]) = {
-      operation.execute(inputStack, opsInput) == expected match {
+      val Seq(a, b, c) = opsInput
+      operation.execute(inputStack, a, b, c) == expected match {
         case true => println(s"${operation} matched expectation")
         case false => println(s"${operation} did not match expectation")
       }
@@ -172,5 +117,4 @@ object ChronalClassification {
     test(EqualRR, opsInput, stack, List(4, 3, 2, 0))
     test(EqualRR, List(0, 0, 3), stack, List(4, 3, 2, 1))
   }
-
 }
