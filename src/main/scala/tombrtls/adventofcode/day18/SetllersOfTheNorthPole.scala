@@ -2,6 +2,8 @@ package tombrtls.adventofcode.day18
 
 import tombrtls.adventofcode.{FileHelper, Grid, Vector2}
 
+import scala.annotation.tailrec
+
 sealed abstract class Acre {
   override def toString: String = this match {
     case Ground => "."
@@ -54,13 +56,23 @@ object SetllersOfTheNorthPole  {
     val lines = FileHelper.readLines("/day18/input.txt")
     val grid: Grid[Acre] = Grid.from(lines, Acre.fromChar)
 
+
     def assignment1: Unit = {
-      val area = (0 until 10).foldLeft(Area(grid)) { (area, _) => area.progress }
+      val initialArea = Area(grid)
+      println(s"Initial state: \r\n${initialArea}\r\n")
+      val area = (0 until 10).foldLeft(initialArea) { (area, index) =>
+        val newArea = area.progress
+        println(s"Area after ${index + 1} minute")
+        println(s"${newArea}")
+        println("")
+        newArea
+      }
       println("Assignment 1")
       println(s"Score: ${area.score}")
     }
 
     def assignment2: Unit = {
+      @tailrec
       def findIndicesForSameScore(area: Area, scoresToIndices: Map[Long, List[Long]], index: Long): (Area, List[Long]) = {
         val nextArea = area.progress
         val nextScore = nextArea.score
@@ -82,7 +94,7 @@ object SetllersOfTheNorthPole  {
       val indexDelta = last - secondLast
       val remainingIncrements = Math.floor((1000000000l - last) / indexDelta).toLong
       val nextIndex = last + (indexDelta * remainingIncrements)
-      val endArea = (nextIndex until 1000000000l).foldLeft(newArea) { (area, index) =>
+      val endArea = (nextIndex until 1000000000l).foldLeft(newArea) { (area, _) =>
         area.progress
       }
 
@@ -94,6 +106,6 @@ object SetllersOfTheNorthPole  {
 
     println("")
 
-    assignment2
+//    assignment2
   }
 }

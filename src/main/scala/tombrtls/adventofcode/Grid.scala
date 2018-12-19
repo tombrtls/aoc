@@ -43,7 +43,7 @@ object Grid {
       map.update(y, innerMap)
 
       for ((char, x) <- line.zipWithIndex) {
-        innerMap.update(x, processor(Vector2(x, y), char))
+        innerMap.update(x, processor(char))
       }
     }
 

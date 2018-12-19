@@ -158,7 +158,7 @@ class UndergroundMap(clayRanges: Seq[ClayRange]) {
           changeMaterialAtLocation(vector, DrySand)
           runWaterDown(nextVector)
         }
-        case _ => // Do nothing
+        case _ => changeMaterialAtLocation(vector, DrySand)
       }
     }
   }
