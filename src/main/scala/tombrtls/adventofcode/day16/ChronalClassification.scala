@@ -59,15 +59,33 @@ case object EqualRI extends Operation
 case object EqualRR extends Operation
 
 
-object SampleAssignment {
+object ChronalClassification {
 
   val registerRegexp = """.*\[(\d*), (\d*), (\d*), (\d*)\]""".r
   val instructionsRegexp = """(\d*) (\d*) (\d*) (\d*)""".r
 
   def main(args: Array[String]): Unit = {
+    val samples = readSamples("/day16/input.txt")
+    val sampleToOperations = executeOperationsOnSamples(samples, Operation.allOperations.toSet)
+    val opcodeToOperation = determineOpcodeToOperation(sampleToOperations)
 
+    val instructions = FileHelper.readLines("/day16/input2.txt")
+        .map {
+          case instructionsRegexp(first, second, third, fourth) => Seq(first, second, third, fourth).map(_.toInt)
+        }
+
+    val stack = instructions.foldLeft(List(0, 0, 0, 0)) { (stack, instruction) =>
+      val Seq(opcode, a, b, c) = instruction
+      val operation = opcodeToOperation(opcode)
+      operation.execute(stack, List(a, b, c))
+    }
+
+    println(s"${stack(0)}")
+  }
+
+  def readSamples(fileName: String) = {
     val lines = FileHelper.readLines("/day16/input.txt")
-    val samples = lines.filterNot(_.length == 0).sliding(3, 3)
+    lines.filterNot(_.length == 0).sliding(3, 3)
       .map { sampleInput =>
         val before = sampleInput.head match {
           case registerRegexp(first, second, third, fourth) => Seq(first, second, third, fourth).map(_.toInt)
@@ -83,20 +101,41 @@ object SampleAssignment {
 
         Sample(instructions.head, before.toList, instructions.tail.toList, after.toList)
       }
+      .toList
+  }
 
-    var opsCodeToOperations: Map[Int, Set[Operation]] = Map.empty.withDefaultValue(Set.empty)
+  def executeOperationsOnSamples(samples: Seq[Sample], operations: Set[Operation]): Map[Sample, Set[Operation]] = {
+    var sampleToOperations: Map[Sample, Set[Operation]] = Map.empty.withDefaultValue(Set.empty)
     for (sample <- samples; operation <- Operation.allOperations) {
       operation.execute(sample.before, sample.operation) == sample.after match {
         case true => {
-          val operations = opsCodeToOperations(sample.opsCode)
-          opsCodeToOperations = opsCodeToOperations.updated(sample.opsCode, operations + operation)
+          val operations = sampleToOperations(sample)
+          sampleToOperations = sampleToOperations.updated(sample, operations + operation)
         }
         case false => {
           // Do Nothing
         }
       }
     }
+    sampleToOperations
+  }
 
+  def determineOpcodeToOperation(sampleToOperations: Map[Sample, Set[Operation]]): Map[Int, Operation] = {
+    val opcodeToOperations = sampleToOperations
+      .groupBy(_._1.opsCode)
+      .mapValues { _.values }
+      .mapValues { _.reduce(_.intersect(_)) }
+
+    (0 until Operation.allOperations.size).foldLeft(Map[Int, Operation]()) { (map, _) =>
+      val singleOperations = opcodeToOperations
+        .mapValues(_ -- map.values)
+        .filter(_._2.size == 1)
+
+      map ++ singleOperations.mapValues(_.head)
+    }
+  }
+
+  def tests = {
     def test(operation: Operation, opsInput: List[Int], inputStack: List[Int], expected: Seq[Int]) = {
       operation.execute(inputStack, opsInput) == expected match {
         case true => println(s"${operation} matched expectation")
@@ -114,24 +153,24 @@ object SampleAssignment {
     test(BanI, opsInput, stack, List(4, 3, 2, 0))
     test(BorR, opsInput, stack, List(4, 3, 2, 7))
     test(BorI, opsInput, stack, List(4, 3, 2, 5))
+
     test(GreaterThanIR, opsInput, stack, List(4, 3, 2, 0))
     test(GreaterThanIR, List(5, 0, 3), stack, List(4, 3, 2, 1))
 
     test(GreaterThanRI, opsInput, stack, List(4, 3, 2, 1))
-    test(GreaterThanIR, List(5, 0, 3), stack, List(4, 3, 2, 1))
-
+    test(GreaterThanRI, List(1, 5, 3), stack, List(4, 3, 2, 0))
 
     test(GreaterThanRR, opsInput, stack, List(4, 3, 2, 1))
+    test(GreaterThanRR, List(1, 0, 3), stack, List(4, 3, 2, 0))
+
     test(EqualIR, opsInput, stack, List(4, 3, 2, 0))
+    test(EqualIR, List(4, 0, 3), stack, List(4, 3, 2, 1))
+
     test(EqualRI, opsInput, stack, List(4, 3, 2, 0))
+    test(EqualRI, List(0, 4, 3), stack, List(4, 3, 2, 1))
+
     test(EqualRR, opsInput, stack, List(4, 3, 2, 0))
-
-
-
-    println(s"${opsCodeToOperations}")
-    println("")
-
-    val count = opsCodeToOperations.count { case (opsCode, operations) => operations.size >= 3 }
-    println(s"Count: ${count}")
+    test(EqualRR, List(0, 0, 3), stack, List(4, 3, 2, 1))
   }
+
 }
